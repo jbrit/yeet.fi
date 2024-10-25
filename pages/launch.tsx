@@ -17,7 +17,7 @@ import { useAccount } from "wagmi";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-export default function launch() {
+export default function Launch() {
   const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
@@ -197,7 +197,7 @@ export default function launch() {
         onClick={() => {
           setMoreOptions(!moreOptions);
         }}
-        className="text-base text-fuel-green self-start hover:underline transition-all"
+        className="text-base text-stone-700 self-start hover:underline transition-all"
       >
         {moreOptions ? "Less Options ↑" : "More options ↓"}
       </button>

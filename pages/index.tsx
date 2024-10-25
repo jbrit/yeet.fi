@@ -1,4 +1,3 @@
-import Image from "next/image";
 import localFont from "next/font/local";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card";
@@ -49,6 +48,7 @@ export default function Home() {
         !!tradesData &&
         poolsData.Pool.map((pool) => (
           <Link
+            key={pool.id}
             className="no-underline hover:no-underline"
             href={`/${pool.asset}`}
           >
@@ -68,7 +68,7 @@ export default function Home() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  fuelled by {getTruncatedAddress(pool.createdBy)} [
+                  yeeted by {getTruncatedAddress(pool.createdBy)} [
                   {moment(pool.createdAt * 1000).fromNow()}]
                 </CardContent>
                 <CardFooter className="text-gray-400 text-sm">

@@ -5,7 +5,6 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  gql,
 } from "@apollo/client";
 import { INDEXER_GRAPHQL_URL } from "@/lib/utils";
 import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";

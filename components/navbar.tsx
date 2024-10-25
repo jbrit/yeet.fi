@@ -10,7 +10,7 @@ export const Navbar = () => {
       {/* Larger screens */}
       <nav className="hidden md:flex justify-between items-center p-4 bg-white text-black border rounded-lg gap-6">
         <Link href="/">
-            <div className="font-bold text-fuel-green">YEET <span className="font-light text-stone-400 italic">finance</span></div>
+            <div className="font-bold text-stone-700">YEET <span className="font-light text-stone-400 italic">finance</span></div>
         </Link>
 
         <div className="flex justify-between items-center gap-6">
@@ -24,7 +24,7 @@ export const Navbar = () => {
       <nav className="flex flex-col md:hidden p-4 bg-white text-black border rounded-lg items-center gap-4">
         <div className="w-full flex justify-between items-center gap-2">
           <Link href="/">
-          <div className="font-bold text-fuel-green">YEET <span className="font-light text-stone-400 italic">finance</span></div>
+          <div className="font-bold text-stone-700">YEET <span className="font-light text-stone-400 italic">finance</span></div>
           </Link>
           <img
             src={isMobileMenuOpen ? "/close.svg" : "/hamburger.svg"}
