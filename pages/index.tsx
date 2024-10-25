@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/co
 import moment from "moment";
 import { useQuery } from "@apollo/client";
 import { ALL_POOLS_QUERY, ALL_TRADES_QUERY } from "@/queries";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,6 +37,14 @@ export default function Home() {
 
   return (
     <div className="grid grid-cols md:grid-cols-2 xl:grid-cols-3 gap-4 place-items-stretch">
+      {(poolsLoading || tradesLoading) && ([1,1,1,1,1]).map((_, idx) => <div key={idx} className="h-52 p-4 grid grid-cols-5 gap-6">
+        <Skeleton className="h-full col-span-2 rounded-lg" />
+        <div className="h-full col-span-3">
+          <Skeleton className="h-6 mb-2" />
+          <Skeleton className="h-6 w-20 mb-2" />
+          <Skeleton className="h-32 mb-2" />
+        </div>
+      </div>)}
       {!!poolsData &&
         !!tradesData &&
         poolsData.Pool.map((pool) => (
@@ -43,10 +52,10 @@ export default function Home() {
             className="no-underline hover:no-underline"
             href={`/${pool.asset}`}
           >
-            <Card className="hover:no-underline flex flex-col md:flex-row items-stretch md:items-center h-full">
-              <div className="py-2 px-4">
+            <Card className="hover:no-underline flex flex-col md:flex-row items-stretch md:items-center h-full border">
+              <div className="py-2 px-4 max-h-52 overflow-hidden">
                 <img
-                  className="w-full md:w-44 h-auto object-cover"
+                  className="w-full md:w-44 h-auto object-contain"
                   alt=""
                   src={pool.image ?? ""}
                 />
