@@ -6,11 +6,11 @@ import "./BondingCurve.sol";
 contract YeetFinance {
     mapping (address token => BondingCurve) public bondingCurves;
 
-    error UnregisteredToken(address token);
-
     /**
      * @dev Throws if an unregistered token is provided
      */
+    error UnregisteredToken(address token);
+
     modifier onlyRegisteredToken(address token) {
         if (address(bondingCurves[token]) == address(0)){
             revert UnregisteredToken(token);
@@ -22,15 +22,18 @@ contract YeetFinance {
         BondingCurve curve = new BondingCurve(name, symbol);
         address token = address(curve.memeCoin());
         bondingCurves[token] = curve;
+        curve.memeCoin().approve(address(curve), type(uint256).max);
         return token;
     }
 
-    function buyToken(address token, uint256 amount, uint256 maxEthIn) external onlyRegisteredToken(token) returns(uint256) {
-        return BondingCurve(token).buyToken(msg.sender, amount, maxEthIn);
+    function buyToken(address token, uint256 amount, uint256 maxEthIn) external payable onlyRegisteredToken(token) returns(uint256) {
+        return bondingCurves[token].buyToken{value: msg.value}(msg.sender, amount, maxEthIn);
     }
 
     function sellToken(address token, uint256 amount, uint256 minEthOut) external onlyRegisteredToken(token) returns(uint256) {
-        return BondingCurve(token).sellToken(msg.sender, amount, minEthOut);
+        BondingCurve curve = bondingCurves[token];
+        curve.memeCoin().transferFrom(msg.sender, address(this), amount);
+        return curve.sellToken(msg.sender, amount, minEthOut);
 
     }
 }

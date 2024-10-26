@@ -9,11 +9,12 @@ contract MemeCoin is ERC20, Ownable {
 
     constructor(string memory name_, string memory symbol_) ERC20(name_, symbol_) Ownable(msg.sender) {
         _mint(address(this), 1e27); // 1 billion tokens
+        _approve(address(this), msg.sender, type(uint256).max);
     }
 
     function curveTransferTokens(address recepient, uint256 amount) public onlyOwner {
         curveSupply -= amount;
-        transfer(recepient, amount);
+        transferFrom(address(this), recepient, amount);
     }
 
     function curveReceiveTokens(uint256 amount) public onlyOwner {
