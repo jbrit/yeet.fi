@@ -14,7 +14,7 @@ contract CounterTest is Test {
         console.log("yeet finace contract:");
         console.log(address(yeetFinance));
         // address dummyToken = address(0);
-        memeCoin = yeetFinance.yeet("name", "symbol");
+        memeCoin = yeetFinance.yeet("name", "symbol", "", "", "", "", "");
     }
 
     function test_Increment() public {
