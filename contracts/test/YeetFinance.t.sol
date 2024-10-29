@@ -17,12 +17,12 @@ contract CounterTest is Test {
         console.log("yeet finace contract:");
         console.log(address(yeetFinance));
         // address dummyToken = address(0);
-        memeCoin = yeetFinance.yeet("name", "symbol", "", "", "", "", "");
+        memeCoin = yeetFinance.yeet("name", "symbol", "", "", "", "", "", 0);
         fakeWETH.mint(address(this), 5);
         fakeWETH.approve(address(yeetFinance.bondingCurves(memeCoin)), type(uint256).max);
     }
 
-    function test_Increment() public {
+    function test_Trading() public {
         uint256 amount = 7e26;
         uint256 maxEthIn = 1e18;
         uint256 expectedEthIn = yeetFinance.bondingCurves(memeCoin).ethInByTokenOut(amount);
@@ -35,5 +35,6 @@ contract CounterTest is Test {
 
         MemeCoin(memeCoin).approve(address(yeetFinance), type(uint256).max);
         yeetFinance.sellToken(memeCoin, amount, minEthOut);
+        console.log("kickoff:", yeetFinance.kickoffs(memeCoin));
     }
 }

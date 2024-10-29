@@ -7,6 +7,7 @@ import "./BondingCurve.sol";
 contract YeetFinance {
     IERC20 public WETH;
     mapping(address token => BondingCurve) public bondingCurves;
+    mapping(address token => uint256) public kickoffs;
 
     constructor(address _WETH) {
         WETH = IERC20(_WETH);
@@ -21,7 +22,8 @@ contract YeetFinance {
         string image,
         string twitter,
         string telegram,
-        string website
+        string website,
+        uint256 kickoff
     );
     event TokenBought(address indexed trader, address indexed token, uint256 amount, uint256 ethIn);
     event TokenSold(address indexed trader, address indexed token, uint256 amount, uint256 ethOut);
@@ -30,10 +32,17 @@ contract YeetFinance {
      * @dev Throws if an unregistered token is provided
      */
     error UnregisteredToken(address token);
+    /**
+     * @dev Throws if trade is made before kickoff
+     */
+    error UninitializedTrade(address token);
 
     modifier onlyRegisteredToken(address token) {
         if (address(bondingCurves[token]) == address(0)) {
             revert UnregisteredToken(token);
+        }
+        if (kickoffs[token] > block.timestamp) {
+            revert UninitializedTrade(token);
         }
         _;
     }
@@ -45,13 +54,18 @@ contract YeetFinance {
         string memory image,
         string memory twitter,
         string memory telegram,
-        string memory website
+        string memory website,
+        uint256 kickoff
     ) external returns (address) {
         BondingCurve curve = new BondingCurve(name, symbol, WETH);
         address token = address(curve.memeCoin());
         bondingCurves[token] = curve;
         curve.memeCoin().approve(address(curve), type(uint256).max);
-        emit CurveInitialized(msg.sender, token, name, symbol, description, image, twitter, telegram, website);
+        if (kickoff < block.timestamp) {
+            kickoff = block.timestamp;
+        }
+        kickoffs[token] = kickoff;
+        emit CurveInitialized(msg.sender, token, name, symbol, description, image, twitter, telegram, website, kickoff);
         return token;
     }
 
