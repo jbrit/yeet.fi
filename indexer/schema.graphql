@@ -1,0 +1,39 @@
+enum Chain {
+  BASE
+  AURORA
+}
+
+enum TradeType {
+  BUY
+  SELL
+}
+
+type Trade {
+  id: ID!
+  chain: Chain!
+  tradeType: TradeType!
+  tokenAmount: BigInt!
+  ethAmount: BigInt!
+  trader: String!
+  createdAt: Int!
+  txId: String!
+  token: String!
+}
+
+type Pool {
+  id: ID!
+  chain: Chain!
+  name: String!
+  symbol: String!
+  description: String!
+  image: String!
+  twitter: String!
+  telegram: String!
+  website: String!
+  token: String!
+  contract: String!
+  createdBy: String!
+  createdAt: Int!
+  txId: String!
+  kickoff: BigInt!
+}
