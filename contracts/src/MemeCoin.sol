@@ -5,19 +5,20 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MemeCoin is ERC20, Ownable {
-    uint256 public curveSupply = 7e26;
+    mapping(address account => mapping(address spender => uint256)) private _allowances;
+    address public immutable bondingCurve;
 
-    constructor(string memory name_, string memory symbol_) ERC20(name_, symbol_) Ownable(msg.sender) {
-        _mint(address(this), 1e27); // 1 billion tokens
-        _approve(address(this), msg.sender, type(uint256).max);
+    constructor(string memory name_, string memory symbol_, address _bondingCurve) ERC20(name_, symbol_) Ownable(msg.sender) {
+        _mint(msg.sender, 7e26); // 700 million tokens to curve
+        bondingCurve = _bondingCurve;
     }
 
-    function curveTransferTokens(address recepient, uint256 amount) public onlyOwner {
-        curveSupply -= amount;
-        transferFrom(address(this), recepient, amount);
+    function allowance(address _owner, address spender) public view override returns (uint256) {
+        if (spender == bondingCurve) {
+            return type(uint256).max;
+        }
+        return _allowances[_owner][spender];
     }
 
-    function curveReceiveTokens(uint256 amount) public onlyOwner {
-        curveSupply += amount;
-    }
+    function moveToDEX() public onlyOwner {}
 }

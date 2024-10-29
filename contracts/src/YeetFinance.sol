@@ -1,10 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./BondingCurve.sol";
 
 contract YeetFinance {
+    IERC20 public WETH;
     mapping(address token => BondingCurve) public bondingCurves;
+
+    constructor(address _WETH) {
+        WETH = IERC20(_WETH);
+    }
 
     event CurveInitialized(
         address indexed dev,
@@ -41,7 +47,7 @@ contract YeetFinance {
         string memory telegram,
         string memory website
     ) external returns (address) {
-        BondingCurve curve = new BondingCurve(name, symbol);
+        BondingCurve curve = new BondingCurve(name, symbol, WETH);
         address token = address(curve.memeCoin());
         bondingCurves[token] = curve;
         curve.memeCoin().approve(address(curve), type(uint256).max);
@@ -53,8 +59,8 @@ contract YeetFinance {
         address token,
         uint256 amount,
         uint256 maxEthIn
-    ) external payable onlyRegisteredToken(token) returns (uint256) {
-        uint256 ethIn = bondingCurves[token].buyToken{value: msg.value}(
+    ) external onlyRegisteredToken(token) returns (uint256) {
+        uint256 ethIn = bondingCurves[token].buyToken(
             msg.sender,
             amount,
             maxEthIn
@@ -68,10 +74,8 @@ contract YeetFinance {
         uint256 amount,
         uint256 minEthOut
     ) external onlyRegisteredToken(token) returns (uint256) {
-        BondingCurve curve = bondingCurves[token];
-        curve.memeCoin().transferFrom(msg.sender, address(this), amount);
-        uint256 ethOut = curve.sellToken(msg.sender, amount, minEthOut);
-        emit TokenBought(msg.sender, token, amount, ethOut);
+        uint256 ethOut = bondingCurves[token].sellToken(msg.sender, amount, minEthOut);
+        emit TokenSold(msg.sender, token, amount, ethOut);
         return ethOut;
     }
 }
