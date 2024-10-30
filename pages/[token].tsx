@@ -25,7 +25,7 @@ export default function Token({
   } = useQuery(ALL_TRADES_QUERY, { pollInterval: 500 });
 
   const filteredPoolInfos = poolsData?.Pool.filter(
-    (pool) => pool.asset === token
+    (pool) => pool.token === token
   );
   const poolInfo = filteredPoolInfos?.length ? filteredPoolInfos[0] : null;
 
@@ -115,7 +115,7 @@ export default function Token({
                     <p className="text-sm text-gray-600">
                       Ticker: {poolInfo.symbol}
                     </p>
-                    <p className="text-sm text-gray-600">Asset id:</p>
+                    <p className="text-sm text-gray-600">token address:</p>
                     <p className="flex text-sm font-bold text-gray-600 items-center gap-1 border border-gray-400 h-7">
                       <span className="p-1">
                         {getTruncatedAddress(token)}

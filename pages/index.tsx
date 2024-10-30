@@ -50,7 +50,7 @@ export default function Home() {
           <Link
             key={pool.id}
             className="no-underline hover:no-underline"
-            href={`/${pool.asset}`}
+            href={`/${pool.token}`}
           >
             <Card className="hover:no-underline flex flex-col md:flex-row items-stretch md:items-center h-full border">
               <div className="py-2 px-4 max-h-52 overflow-hidden">
@@ -64,11 +64,11 @@ export default function Home() {
                 <CardHeader>
                   {pool.name} [symbol: ${pool.symbol}]
                   <CardDescription>
-                    {getTradeCount(pool.asset)!} trades
+                    {getTradeCount(pool.token)!} trades
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  yeeted by {getTruncatedAddress(pool.createdBy)} [
+                  yeeted by {getTruncatedAddress(pool.createdBy)} on [{pool.chain}] [
                   {moment(pool.createdAt * 1000).fromNow()}]
                 </CardContent>
                 <CardFooter className="text-gray-400 text-sm">

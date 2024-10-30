@@ -3,6 +3,7 @@ import { gql } from "./__generated__";
 export const ALL_POOLS_QUERY = gql(`query AllPools {
   Pool {
     id
+    chain
     name
     symbol
     description
@@ -11,7 +12,7 @@ export const ALL_POOLS_QUERY = gql(`query AllPools {
     telegram
     website
     txId
-    asset
+    token
     contract
     createdAt
     createdBy

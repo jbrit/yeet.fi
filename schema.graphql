@@ -45,7 +45,7 @@ input Int_comparison_exp {
 columns and relationships of "Pool"
 """
 type Pool {
-  asset: String!
+  chain: chain!
   contract: String!
   createdAt: Int!
   createdBy: String!
@@ -53,9 +53,11 @@ type Pool {
   description: String!
   id: String!
   image: String!
+  kickoff: numeric!
   name: String!
   symbol: String!
   telegram: String!
+  token: String!
   twitter: String!
   txId: String!
   website: String!
@@ -68,7 +70,7 @@ input Pool_bool_exp {
   _and: [Pool_bool_exp!]
   _not: Pool_bool_exp
   _or: [Pool_bool_exp!]
-  asset: String_comparison_exp
+  chain: chain_comparison_exp
   contract: String_comparison_exp
   createdAt: Int_comparison_exp
   createdBy: String_comparison_exp
@@ -76,9 +78,11 @@ input Pool_bool_exp {
   description: String_comparison_exp
   id: String_comparison_exp
   image: String_comparison_exp
+  kickoff: numeric_comparison_exp
   name: String_comparison_exp
   symbol: String_comparison_exp
   telegram: String_comparison_exp
+  token: String_comparison_exp
   twitter: String_comparison_exp
   txId: String_comparison_exp
   website: String_comparison_exp
@@ -86,7 +90,7 @@ input Pool_bool_exp {
 
 """Ordering options when selecting data from "Pool"."""
 input Pool_order_by {
-  asset: order_by
+  chain: order_by
   contract: order_by
   createdAt: order_by
   createdBy: order_by
@@ -94,9 +98,11 @@ input Pool_order_by {
   description: order_by
   id: order_by
   image: order_by
+  kickoff: order_by
   name: order_by
   symbol: order_by
   telegram: order_by
+  token: order_by
   twitter: order_by
   txId: order_by
   website: order_by
@@ -107,7 +113,7 @@ select columns of table "Pool"
 """
 enum Pool_select_column {
   """column name"""
-  asset
+  chain
   """column name"""
   contract
   """column name"""
@@ -123,11 +129,15 @@ enum Pool_select_column {
   """column name"""
   image
   """column name"""
+  kickoff
+  """column name"""
   name
   """column name"""
   symbol
   """column name"""
   telegram
+  """column name"""
+  token
   """column name"""
   twitter
   """column name"""
@@ -148,7 +158,7 @@ input Pool_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input Pool_stream_cursor_value_input {
-  asset: String
+  chain: chain
   contract: String
   createdAt: Int
   createdBy: String
@@ -156,9 +166,11 @@ input Pool_stream_cursor_value_input {
   description: String
   id: String
   image: String
+  kickoff: numeric
   name: String
   symbol: String
   telegram: String
+  token: String
   twitter: String
   txId: String
   website: String
@@ -211,6 +223,7 @@ input String_comparison_exp {
 columns and relationships of "Trade"
 """
 type Trade {
+  chain: chain!
   createdAt: Int!
   db_write_timestamp: timestamp
   ethAmount: numeric!
@@ -229,6 +242,7 @@ input Trade_bool_exp {
   _and: [Trade_bool_exp!]
   _not: Trade_bool_exp
   _or: [Trade_bool_exp!]
+  chain: chain_comparison_exp
   createdAt: Int_comparison_exp
   db_write_timestamp: timestamp_comparison_exp
   ethAmount: numeric_comparison_exp
@@ -242,6 +256,7 @@ input Trade_bool_exp {
 
 """Ordering options when selecting data from "Trade"."""
 input Trade_order_by {
+  chain: order_by
   createdAt: order_by
   db_write_timestamp: order_by
   ethAmount: order_by
@@ -257,6 +272,8 @@ input Trade_order_by {
 select columns of table "Trade"
 """
 enum Trade_select_column {
+  """column name"""
+  chain
   """column name"""
   createdAt
   """column name"""
@@ -289,6 +306,7 @@ input Trade_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input Trade_stream_cursor_value_input {
+  chain: chain
   createdAt: Int
   db_write_timestamp: timestamp
   ethAmount: numeric
@@ -298,6 +316,23 @@ input Trade_stream_cursor_value_input {
   tradeType: tradetype
   trader: String
   txId: String
+}
+
+scalar chain
+
+"""
+Boolean expression to compare columns of type "chain". All fields are combined with logical 'AND'.
+"""
+input chain_comparison_exp {
+  _eq: chain
+  _gt: chain
+  _gte: chain
+  _in: [chain!]
+  _is_null: Boolean
+  _lt: chain
+  _lte: chain
+  _neq: chain
+  _nin: [chain!]
 }
 
 """
@@ -434,11 +469,15 @@ enum cursor_ordering {
 columns and relationships of "dynamic_contract_registry"
 """
 type dynamic_contract_registry {
-  block_timestamp: Int!
   chain_id: Int!
   contract_address: String!
   contract_type: contract_type!
-  event_id: numeric!
+  registering_event_block_number: Int!
+  registering_event_block_timestamp: Int!
+  registering_event_contract_name: String!
+  registering_event_log_index: Int!
+  registering_event_name: String!
+  registering_event_src_address: String!
 }
 
 """
@@ -448,20 +487,28 @@ input dynamic_contract_registry_bool_exp {
   _and: [dynamic_contract_registry_bool_exp!]
   _not: dynamic_contract_registry_bool_exp
   _or: [dynamic_contract_registry_bool_exp!]
-  block_timestamp: Int_comparison_exp
   chain_id: Int_comparison_exp
   contract_address: String_comparison_exp
   contract_type: contract_type_comparison_exp
-  event_id: numeric_comparison_exp
+  registering_event_block_number: Int_comparison_exp
+  registering_event_block_timestamp: Int_comparison_exp
+  registering_event_contract_name: String_comparison_exp
+  registering_event_log_index: Int_comparison_exp
+  registering_event_name: String_comparison_exp
+  registering_event_src_address: String_comparison_exp
 }
 
 """Ordering options when selecting data from "dynamic_contract_registry"."""
 input dynamic_contract_registry_order_by {
-  block_timestamp: order_by
   chain_id: order_by
   contract_address: order_by
   contract_type: order_by
-  event_id: order_by
+  registering_event_block_number: order_by
+  registering_event_block_timestamp: order_by
+  registering_event_contract_name: order_by
+  registering_event_log_index: order_by
+  registering_event_name: order_by
+  registering_event_src_address: order_by
 }
 
 """
@@ -469,15 +516,23 @@ select columns of table "dynamic_contract_registry"
 """
 enum dynamic_contract_registry_select_column {
   """column name"""
-  block_timestamp
-  """column name"""
   chain_id
   """column name"""
   contract_address
   """column name"""
   contract_type
   """column name"""
-  event_id
+  registering_event_block_number
+  """column name"""
+  registering_event_block_timestamp
+  """column name"""
+  registering_event_contract_name
+  """column name"""
+  registering_event_log_index
+  """column name"""
+  registering_event_name
+  """column name"""
+  registering_event_src_address
 }
 
 """
@@ -492,11 +547,15 @@ input dynamic_contract_registry_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input dynamic_contract_registry_stream_cursor_value_input {
-  block_timestamp: Int
   chain_id: Int
   contract_address: String
   contract_type: contract_type
-  event_id: numeric
+  registering_event_block_number: Int
+  registering_event_block_timestamp: Int
+  registering_event_contract_name: String
+  registering_event_log_index: Int
+  registering_event_name: String
+  registering_event_src_address: String
 }
 
 """
@@ -579,7 +638,7 @@ type entity_history {
   params(
     """JSON select path"""
     path: String
-  ): json
+  ): jsonb
   previous_block_number: Int
   previous_block_timestamp: Int
   previous_chain_id: Int
@@ -631,7 +690,7 @@ input entity_history_bool_exp {
   entity_type: entity_type_comparison_exp
   event: raw_events_bool_exp
   log_index: Int_comparison_exp
-  params: json_comparison_exp
+  params: jsonb_comparison_exp
   previous_block_number: Int_comparison_exp
   previous_block_timestamp: Int_comparison_exp
   previous_chain_id: Int_comparison_exp
@@ -653,11 +712,11 @@ type entity_history_filter {
   new_val(
     """JSON select path"""
     path: String
-  ): json
+  ): jsonb
   old_val(
     """JSON select path"""
     path: String
-  ): json
+  ): jsonb
   previous_block_number: Int
   previous_log_index: Int!
 }
@@ -676,8 +735,8 @@ input entity_history_filter_bool_exp {
   entity_type: entity_type_comparison_exp
   event: raw_events_bool_exp
   log_index: Int_comparison_exp
-  new_val: json_comparison_exp
-  old_val: json_comparison_exp
+  new_val: jsonb_comparison_exp
+  old_val: jsonb_comparison_exp
   previous_block_number: Int_comparison_exp
   previous_log_index: Int_comparison_exp
 }
@@ -741,8 +800,8 @@ input entity_history_filter_stream_cursor_value_input {
   entity_id: String
   entity_type: entity_type
   log_index: Int
-  new_val: json
-  old_val: json
+  new_val: jsonb
+  old_val: jsonb
   previous_block_number: Int
   previous_log_index: Int
 }
@@ -883,7 +942,7 @@ input entity_history_stream_cursor_value_input {
   entity_id: String
   entity_type: entity_type
   log_index: Int
-  params: json
+  params: jsonb
   previous_block_number: Int
   previous_block_timestamp: Int
   previous_chain_id: Int
@@ -970,6 +1029,7 @@ type event_sync_state {
   block_number: Int!
   block_timestamp: Int!
   chain_id: Int!
+  is_pre_registering_dynamic_contracts: Boolean!
   log_index: Int!
 }
 
@@ -983,6 +1043,7 @@ input event_sync_state_bool_exp {
   block_number: Int_comparison_exp
   block_timestamp: Int_comparison_exp
   chain_id: Int_comparison_exp
+  is_pre_registering_dynamic_contracts: Boolean_comparison_exp
   log_index: Int_comparison_exp
 }
 
@@ -991,6 +1052,7 @@ input event_sync_state_order_by {
   block_number: order_by
   block_timestamp: order_by
   chain_id: order_by
+  is_pre_registering_dynamic_contracts: order_by
   log_index: order_by
 }
 
@@ -1004,6 +1066,8 @@ enum event_sync_state_select_column {
   block_timestamp
   """column name"""
   chain_id
+  """column name"""
+  is_pre_registering_dynamic_contracts
   """column name"""
   log_index
 }
@@ -1023,6 +1087,7 @@ input event_sync_state_stream_cursor_value_input {
   block_number: Int
   block_timestamp: Int
   chain_id: Int
+  is_pre_registering_dynamic_contracts: Boolean
   log_index: Int
 }
 
@@ -1037,21 +1102,36 @@ input get_entity_history_filter_args {
   start_timestamp: Int
 }
 
-scalar json
+scalar jsonb
+
+input jsonb_cast_exp {
+  String: String_comparison_exp
+}
 
 """
-Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'.
+Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'.
 """
-input json_comparison_exp {
-  _eq: json
-  _gt: json
-  _gte: json
-  _in: [json!]
+input jsonb_comparison_exp {
+  _cast: jsonb_cast_exp
+  """is the column contained in the given json value"""
+  _contained_in: jsonb
+  """does the column contain the given json value at the top level"""
+  _contains: jsonb
+  _eq: jsonb
+  _gt: jsonb
+  _gte: jsonb
+  """does the string exist as a top-level key in the column"""
+  _has_key: String
+  """do all of these strings exist as top-level keys in the column"""
+  _has_keys_all: [String!]
+  """do any of these strings exist as top-level keys in the column"""
+  _has_keys_any: [String!]
+  _in: [jsonb!]
   _is_null: Boolean
-  _lt: json
-  _lte: json
-  _neq: json
-  _nin: [json!]
+  _lt: jsonb
+  _lte: jsonb
+  _neq: jsonb
+  _nin: [jsonb!]
 }
 
 scalar numeric
@@ -1367,7 +1447,7 @@ type raw_events {
   block_fields(
     """JSON select path"""
     path: String
-  ): json!
+  ): jsonb!
   block_hash: String!
   block_number: Int!
   block_timestamp: Int!
@@ -1393,12 +1473,12 @@ type raw_events {
   params(
     """JSON select path"""
     path: String
-  ): json!
+  ): jsonb!
   src_address: String!
   transaction_fields(
     """JSON select path"""
     path: String
-  ): json!
+  ): jsonb!
 }
 
 """
@@ -1408,7 +1488,7 @@ input raw_events_bool_exp {
   _and: [raw_events_bool_exp!]
   _not: raw_events_bool_exp
   _or: [raw_events_bool_exp!]
-  block_fields: json_comparison_exp
+  block_fields: jsonb_comparison_exp
   block_hash: String_comparison_exp
   block_number: Int_comparison_exp
   block_timestamp: Int_comparison_exp
@@ -1419,9 +1499,9 @@ input raw_events_bool_exp {
   event_id: numeric_comparison_exp
   event_name: String_comparison_exp
   log_index: Int_comparison_exp
-  params: json_comparison_exp
+  params: jsonb_comparison_exp
   src_address: String_comparison_exp
-  transaction_fields: json_comparison_exp
+  transaction_fields: jsonb_comparison_exp
 }
 
 """Ordering options when selecting data from "raw_events"."""
@@ -1486,7 +1566,7 @@ input raw_events_stream_cursor_input {
 
 """Initial value of the column from where the streaming should start"""
 input raw_events_stream_cursor_value_input {
-  block_fields: json
+  block_fields: jsonb
   block_hash: String
   block_number: Int
   block_timestamp: Int
@@ -1496,9 +1576,9 @@ input raw_events_stream_cursor_value_input {
   event_id: numeric
   event_name: String
   log_index: Int
-  params: json
+  params: jsonb
   src_address: String
-  transaction_fields: json
+  transaction_fields: jsonb
 }
 
 type subscription_root {

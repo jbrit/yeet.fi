@@ -16,6 +16,7 @@ import { useAccount } from "wagmi";
 
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useContracts } from "@/lib/utils";
 
 export default function Launch() {
   const firebaseConfig = {
@@ -45,6 +46,7 @@ export default function Launch() {
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const { isConnected } = useAccount();
+  const {yeetFinance} = useContracts();
 
   const resetFields = () => {
     setName("");
@@ -72,31 +74,38 @@ export default function Launch() {
   };
 
   const onLaunchPress = async () => {
-    if (!!newCurve) {
-      return toast.error("Launch already started");
+    if (!yeetFinance) {
+      return toast.error("contract not loaded");
     }
 
     if (!isConnected) {
       return toast.error("Wallet not connected");
     }
 
-    if (!name || !symbol || !selectedFile) {
+    if (!name || !symbol || !description || !selectedFile) {
       return toast.error("Name, Symbol, description and image required");
     }
-
-    if (selectedFile) {
-      setLoading(true);
+    setLoading(true);
+    try {
       const fileRef = ref(storage, `uploads/${selectedFile.name}`);
-      try {
-        const result = await uploadBytes(fileRef, selectedFile);
-        const downloadURL = await getDownloadURL(result.ref);
-        setImage(downloadURL);
-        console.log("File available at:", downloadURL);
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
-      setLoading(false);
-    }
+      const result = await uploadBytes(fileRef, selectedFile);
+      const downloadURL = await getDownloadURL(result.ref);
+      setImage(downloadURL);
+      console.log("File available at:", downloadURL);
+  
+      const tx = await yeetFinance.write.yeet([
+        name,
+        symbol,
+        description,
+        downloadURL,
+        twitter ?? "",
+        telegram ?? "",
+        website ?? "",
+        BigInt(0)
+      ]);
+      console.log(tx);
+    } catch (error) {}
+    setLoading(false);
   };
 
   const onFinishLaunchPress = async () => {};

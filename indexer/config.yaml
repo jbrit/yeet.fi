@@ -22,4 +22,7 @@ networks:
   - name: YeetFinance
     address:
     - 0xEc87C5619A31665100e3d4d588f1a8B2a20275C0
+field_selection:
+  transaction_fields:
+    - "hash"
 rollback_on_reorg: false

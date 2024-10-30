@@ -14,9 +14,10 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  chain: { input: any; output: any; }
   contract_type: { input: any; output: any; }
   entity_type: { input: any; output: any; }
-  json: { input: any; output: any; }
+  jsonb: { input: any; output: any; }
   numeric: { input: any; output: any; }
   timestamp: { input: any; output: any; }
   timestamptz: { input: any; output: any; }
@@ -54,7 +55,7 @@ export type Pool_Bool_Exp = {
   _and?: InputMaybe<Array<Pool_Bool_Exp>>;
   _not?: InputMaybe<Pool_Bool_Exp>;
   _or?: InputMaybe<Array<Pool_Bool_Exp>>;
-  asset?: InputMaybe<String_Comparison_Exp>;
+  chain?: InputMaybe<Chain_Comparison_Exp>;
   contract?: InputMaybe<String_Comparison_Exp>;
   createdAt?: InputMaybe<Int_Comparison_Exp>;
   createdBy?: InputMaybe<String_Comparison_Exp>;
@@ -62,9 +63,11 @@ export type Pool_Bool_Exp = {
   description?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
   image?: InputMaybe<String_Comparison_Exp>;
+  kickoff?: InputMaybe<Numeric_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   symbol?: InputMaybe<String_Comparison_Exp>;
   telegram?: InputMaybe<String_Comparison_Exp>;
+  token?: InputMaybe<String_Comparison_Exp>;
   twitter?: InputMaybe<String_Comparison_Exp>;
   txId?: InputMaybe<String_Comparison_Exp>;
   website?: InputMaybe<String_Comparison_Exp>;
@@ -72,7 +75,7 @@ export type Pool_Bool_Exp = {
 
 /** Ordering options when selecting data from "Pool". */
 export type Pool_Order_By = {
-  asset?: InputMaybe<Order_By>;
+  chain?: InputMaybe<Order_By>;
   contract?: InputMaybe<Order_By>;
   createdAt?: InputMaybe<Order_By>;
   createdBy?: InputMaybe<Order_By>;
@@ -80,9 +83,11 @@ export type Pool_Order_By = {
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   image?: InputMaybe<Order_By>;
+  kickoff?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   symbol?: InputMaybe<Order_By>;
   telegram?: InputMaybe<Order_By>;
+  token?: InputMaybe<Order_By>;
   twitter?: InputMaybe<Order_By>;
   txId?: InputMaybe<Order_By>;
   website?: InputMaybe<Order_By>;
@@ -91,7 +96,7 @@ export type Pool_Order_By = {
 /** select columns of table "Pool" */
 export enum Pool_Select_Column {
   /** column name */
-  Asset = 'asset',
+  Chain = 'chain',
   /** column name */
   Contract = 'contract',
   /** column name */
@@ -107,11 +112,15 @@ export enum Pool_Select_Column {
   /** column name */
   Image = 'image',
   /** column name */
+  Kickoff = 'kickoff',
+  /** column name */
   Name = 'name',
   /** column name */
   Symbol = 'symbol',
   /** column name */
   Telegram = 'telegram',
+  /** column name */
+  Token = 'token',
   /** column name */
   Twitter = 'twitter',
   /** column name */
@@ -130,7 +139,7 @@ export type Pool_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Pool_Stream_Cursor_Value_Input = {
-  asset?: InputMaybe<Scalars['String']['input']>;
+  chain?: InputMaybe<Scalars['chain']['input']>;
   contract?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Int']['input']>;
   createdBy?: InputMaybe<Scalars['String']['input']>;
@@ -138,9 +147,11 @@ export type Pool_Stream_Cursor_Value_Input = {
   description?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
+  kickoff?: InputMaybe<Scalars['numeric']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   symbol?: InputMaybe<Scalars['String']['input']>;
   telegram?: InputMaybe<Scalars['String']['input']>;
+  token?: InputMaybe<Scalars['String']['input']>;
   twitter?: InputMaybe<Scalars['String']['input']>;
   txId?: InputMaybe<Scalars['String']['input']>;
   website?: InputMaybe<Scalars['String']['input']>;
@@ -184,6 +195,7 @@ export type Trade_Bool_Exp = {
   _and?: InputMaybe<Array<Trade_Bool_Exp>>;
   _not?: InputMaybe<Trade_Bool_Exp>;
   _or?: InputMaybe<Array<Trade_Bool_Exp>>;
+  chain?: InputMaybe<Chain_Comparison_Exp>;
   createdAt?: InputMaybe<Int_Comparison_Exp>;
   db_write_timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
   ethAmount?: InputMaybe<Numeric_Comparison_Exp>;
@@ -197,6 +209,7 @@ export type Trade_Bool_Exp = {
 
 /** Ordering options when selecting data from "Trade". */
 export type Trade_Order_By = {
+  chain?: InputMaybe<Order_By>;
   createdAt?: InputMaybe<Order_By>;
   db_write_timestamp?: InputMaybe<Order_By>;
   ethAmount?: InputMaybe<Order_By>;
@@ -210,6 +223,8 @@ export type Trade_Order_By = {
 
 /** select columns of table "Trade" */
 export enum Trade_Select_Column {
+  /** column name */
+  Chain = 'chain',
   /** column name */
   CreatedAt = 'createdAt',
   /** column name */
@@ -240,6 +255,7 @@ export type Trade_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Trade_Stream_Cursor_Value_Input = {
+  chain?: InputMaybe<Scalars['chain']['input']>;
   createdAt?: InputMaybe<Scalars['Int']['input']>;
   db_write_timestamp?: InputMaybe<Scalars['timestamp']['input']>;
   ethAmount?: InputMaybe<Scalars['numeric']['input']>;
@@ -249,6 +265,19 @@ export type Trade_Stream_Cursor_Value_Input = {
   tradeType?: InputMaybe<Scalars['tradetype']['input']>;
   trader?: InputMaybe<Scalars['String']['input']>;
   txId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Boolean expression to compare columns of type "chain". All fields are combined with logical 'AND'. */
+export type Chain_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['chain']['input']>;
+  _gt?: InputMaybe<Scalars['chain']['input']>;
+  _gte?: InputMaybe<Scalars['chain']['input']>;
+  _in?: InputMaybe<Array<Scalars['chain']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['chain']['input']>;
+  _lte?: InputMaybe<Scalars['chain']['input']>;
+  _neq?: InputMaybe<Scalars['chain']['input']>;
+  _nin?: InputMaybe<Array<Scalars['chain']['input']>>;
 };
 
 /** Boolean expression to filter rows from the table "chain_metadata". All fields are combined with a logical 'AND'. */
@@ -359,26 +388,32 @@ export type Dynamic_Contract_Registry_Bool_Exp = {
   _and?: InputMaybe<Array<Dynamic_Contract_Registry_Bool_Exp>>;
   _not?: InputMaybe<Dynamic_Contract_Registry_Bool_Exp>;
   _or?: InputMaybe<Array<Dynamic_Contract_Registry_Bool_Exp>>;
-  block_timestamp?: InputMaybe<Int_Comparison_Exp>;
   chain_id?: InputMaybe<Int_Comparison_Exp>;
   contract_address?: InputMaybe<String_Comparison_Exp>;
   contract_type?: InputMaybe<Contract_Type_Comparison_Exp>;
-  event_id?: InputMaybe<Numeric_Comparison_Exp>;
+  registering_event_block_number?: InputMaybe<Int_Comparison_Exp>;
+  registering_event_block_timestamp?: InputMaybe<Int_Comparison_Exp>;
+  registering_event_contract_name?: InputMaybe<String_Comparison_Exp>;
+  registering_event_log_index?: InputMaybe<Int_Comparison_Exp>;
+  registering_event_name?: InputMaybe<String_Comparison_Exp>;
+  registering_event_src_address?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** Ordering options when selecting data from "dynamic_contract_registry". */
 export type Dynamic_Contract_Registry_Order_By = {
-  block_timestamp?: InputMaybe<Order_By>;
   chain_id?: InputMaybe<Order_By>;
   contract_address?: InputMaybe<Order_By>;
   contract_type?: InputMaybe<Order_By>;
-  event_id?: InputMaybe<Order_By>;
+  registering_event_block_number?: InputMaybe<Order_By>;
+  registering_event_block_timestamp?: InputMaybe<Order_By>;
+  registering_event_contract_name?: InputMaybe<Order_By>;
+  registering_event_log_index?: InputMaybe<Order_By>;
+  registering_event_name?: InputMaybe<Order_By>;
+  registering_event_src_address?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "dynamic_contract_registry" */
 export enum Dynamic_Contract_Registry_Select_Column {
-  /** column name */
-  BlockTimestamp = 'block_timestamp',
   /** column name */
   ChainId = 'chain_id',
   /** column name */
@@ -386,7 +421,17 @@ export enum Dynamic_Contract_Registry_Select_Column {
   /** column name */
   ContractType = 'contract_type',
   /** column name */
-  EventId = 'event_id'
+  RegisteringEventBlockNumber = 'registering_event_block_number',
+  /** column name */
+  RegisteringEventBlockTimestamp = 'registering_event_block_timestamp',
+  /** column name */
+  RegisteringEventContractName = 'registering_event_contract_name',
+  /** column name */
+  RegisteringEventLogIndex = 'registering_event_log_index',
+  /** column name */
+  RegisteringEventName = 'registering_event_name',
+  /** column name */
+  RegisteringEventSrcAddress = 'registering_event_src_address'
 }
 
 /** Streaming cursor of the table "dynamic_contract_registry" */
@@ -399,11 +444,15 @@ export type Dynamic_Contract_Registry_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Dynamic_Contract_Registry_Stream_Cursor_Value_Input = {
-  block_timestamp?: InputMaybe<Scalars['Int']['input']>;
   chain_id?: InputMaybe<Scalars['Int']['input']>;
   contract_address?: InputMaybe<Scalars['String']['input']>;
   contract_type?: InputMaybe<Scalars['contract_type']['input']>;
-  event_id?: InputMaybe<Scalars['numeric']['input']>;
+  registering_event_block_number?: InputMaybe<Scalars['Int']['input']>;
+  registering_event_block_timestamp?: InputMaybe<Scalars['Int']['input']>;
+  registering_event_contract_name?: InputMaybe<Scalars['String']['input']>;
+  registering_event_log_index?: InputMaybe<Scalars['Int']['input']>;
+  registering_event_name?: InputMaybe<Scalars['String']['input']>;
+  registering_event_src_address?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Boolean expression to filter rows from the table "end_of_block_range_scanned_data". All fields are combined with a logical 'AND'. */
@@ -492,7 +541,7 @@ export type Entity_History_Bool_Exp = {
   entity_type?: InputMaybe<Entity_Type_Comparison_Exp>;
   event?: InputMaybe<Raw_Events_Bool_Exp>;
   log_index?: InputMaybe<Int_Comparison_Exp>;
-  params?: InputMaybe<Json_Comparison_Exp>;
+  params?: InputMaybe<Jsonb_Comparison_Exp>;
   previous_block_number?: InputMaybe<Int_Comparison_Exp>;
   previous_block_timestamp?: InputMaybe<Int_Comparison_Exp>;
   previous_chain_id?: InputMaybe<Int_Comparison_Exp>;
@@ -511,8 +560,8 @@ export type Entity_History_Filter_Bool_Exp = {
   entity_type?: InputMaybe<Entity_Type_Comparison_Exp>;
   event?: InputMaybe<Raw_Events_Bool_Exp>;
   log_index?: InputMaybe<Int_Comparison_Exp>;
-  new_val?: InputMaybe<Json_Comparison_Exp>;
-  old_val?: InputMaybe<Json_Comparison_Exp>;
+  new_val?: InputMaybe<Jsonb_Comparison_Exp>;
+  old_val?: InputMaybe<Jsonb_Comparison_Exp>;
   previous_block_number?: InputMaybe<Int_Comparison_Exp>;
   previous_log_index?: InputMaybe<Int_Comparison_Exp>;
 };
@@ -572,8 +621,8 @@ export type Entity_History_Filter_Stream_Cursor_Value_Input = {
   entity_id?: InputMaybe<Scalars['String']['input']>;
   entity_type?: InputMaybe<Scalars['entity_type']['input']>;
   log_index?: InputMaybe<Scalars['Int']['input']>;
-  new_val?: InputMaybe<Scalars['json']['input']>;
-  old_val?: InputMaybe<Scalars['json']['input']>;
+  new_val?: InputMaybe<Scalars['jsonb']['input']>;
+  old_val?: InputMaybe<Scalars['jsonb']['input']>;
   previous_block_number?: InputMaybe<Scalars['Int']['input']>;
   previous_log_index?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -700,7 +749,7 @@ export type Entity_History_Stream_Cursor_Value_Input = {
   entity_id?: InputMaybe<Scalars['String']['input']>;
   entity_type?: InputMaybe<Scalars['entity_type']['input']>;
   log_index?: InputMaybe<Scalars['Int']['input']>;
-  params?: InputMaybe<Scalars['json']['input']>;
+  params?: InputMaybe<Scalars['jsonb']['input']>;
   previous_block_number?: InputMaybe<Scalars['Int']['input']>;
   previous_block_timestamp?: InputMaybe<Scalars['Int']['input']>;
   previous_chain_id?: InputMaybe<Scalars['Int']['input']>;
@@ -776,6 +825,7 @@ export type Event_Sync_State_Bool_Exp = {
   block_number?: InputMaybe<Int_Comparison_Exp>;
   block_timestamp?: InputMaybe<Int_Comparison_Exp>;
   chain_id?: InputMaybe<Int_Comparison_Exp>;
+  is_pre_registering_dynamic_contracts?: InputMaybe<Boolean_Comparison_Exp>;
   log_index?: InputMaybe<Int_Comparison_Exp>;
 };
 
@@ -784,6 +834,7 @@ export type Event_Sync_State_Order_By = {
   block_number?: InputMaybe<Order_By>;
   block_timestamp?: InputMaybe<Order_By>;
   chain_id?: InputMaybe<Order_By>;
+  is_pre_registering_dynamic_contracts?: InputMaybe<Order_By>;
   log_index?: InputMaybe<Order_By>;
 };
 
@@ -795,6 +846,8 @@ export enum Event_Sync_State_Select_Column {
   BlockTimestamp = 'block_timestamp',
   /** column name */
   ChainId = 'chain_id',
+  /** column name */
+  IsPreRegisteringDynamicContracts = 'is_pre_registering_dynamic_contracts',
   /** column name */
   LogIndex = 'log_index'
 }
@@ -812,6 +865,7 @@ export type Event_Sync_State_Stream_Cursor_Value_Input = {
   block_number?: InputMaybe<Scalars['Int']['input']>;
   block_timestamp?: InputMaybe<Scalars['Int']['input']>;
   chain_id?: InputMaybe<Scalars['Int']['input']>;
+  is_pre_registering_dynamic_contracts?: InputMaybe<Scalars['Boolean']['input']>;
   log_index?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -826,17 +880,32 @@ export type Get_Entity_History_Filter_Args = {
   start_timestamp?: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
-export type Json_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['json']['input']>;
-  _gt?: InputMaybe<Scalars['json']['input']>;
-  _gte?: InputMaybe<Scalars['json']['input']>;
-  _in?: InputMaybe<Array<Scalars['json']['input']>>;
+export type Jsonb_Cast_Exp = {
+  String?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+export type Jsonb_Comparison_Exp = {
+  _cast?: InputMaybe<Jsonb_Cast_Exp>;
+  /** is the column contained in the given json value */
+  _contained_in?: InputMaybe<Scalars['jsonb']['input']>;
+  /** does the column contain the given json value at the top level */
+  _contains?: InputMaybe<Scalars['jsonb']['input']>;
+  _eq?: InputMaybe<Scalars['jsonb']['input']>;
+  _gt?: InputMaybe<Scalars['jsonb']['input']>;
+  _gte?: InputMaybe<Scalars['jsonb']['input']>;
+  /** does the string exist as a top-level key in the column */
+  _has_key?: InputMaybe<Scalars['String']['input']>;
+  /** do all of these strings exist as top-level keys in the column */
+  _has_keys_all?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** do any of these strings exist as top-level keys in the column */
+  _has_keys_any?: InputMaybe<Array<Scalars['String']['input']>>;
+  _in?: InputMaybe<Array<Scalars['jsonb']['input']>>;
   _is_null?: InputMaybe<Scalars['Boolean']['input']>;
-  _lt?: InputMaybe<Scalars['json']['input']>;
-  _lte?: InputMaybe<Scalars['json']['input']>;
-  _neq?: InputMaybe<Scalars['json']['input']>;
-  _nin?: InputMaybe<Array<Scalars['json']['input']>>;
+  _lt?: InputMaybe<Scalars['jsonb']['input']>;
+  _lte?: InputMaybe<Scalars['jsonb']['input']>;
+  _neq?: InputMaybe<Scalars['jsonb']['input']>;
+  _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
 };
 
 /** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
@@ -930,7 +999,7 @@ export type Raw_Events_Bool_Exp = {
   _and?: InputMaybe<Array<Raw_Events_Bool_Exp>>;
   _not?: InputMaybe<Raw_Events_Bool_Exp>;
   _or?: InputMaybe<Array<Raw_Events_Bool_Exp>>;
-  block_fields?: InputMaybe<Json_Comparison_Exp>;
+  block_fields?: InputMaybe<Jsonb_Comparison_Exp>;
   block_hash?: InputMaybe<String_Comparison_Exp>;
   block_number?: InputMaybe<Int_Comparison_Exp>;
   block_timestamp?: InputMaybe<Int_Comparison_Exp>;
@@ -941,9 +1010,9 @@ export type Raw_Events_Bool_Exp = {
   event_id?: InputMaybe<Numeric_Comparison_Exp>;
   event_name?: InputMaybe<String_Comparison_Exp>;
   log_index?: InputMaybe<Int_Comparison_Exp>;
-  params?: InputMaybe<Json_Comparison_Exp>;
+  params?: InputMaybe<Jsonb_Comparison_Exp>;
   src_address?: InputMaybe<String_Comparison_Exp>;
-  transaction_fields?: InputMaybe<Json_Comparison_Exp>;
+  transaction_fields?: InputMaybe<Jsonb_Comparison_Exp>;
 };
 
 /** Ordering options when selecting data from "raw_events". */
@@ -1004,7 +1073,7 @@ export type Raw_Events_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Raw_Events_Stream_Cursor_Value_Input = {
-  block_fields?: InputMaybe<Scalars['json']['input']>;
+  block_fields?: InputMaybe<Scalars['jsonb']['input']>;
   block_hash?: InputMaybe<Scalars['String']['input']>;
   block_number?: InputMaybe<Scalars['Int']['input']>;
   block_timestamp?: InputMaybe<Scalars['Int']['input']>;
@@ -1014,9 +1083,9 @@ export type Raw_Events_Stream_Cursor_Value_Input = {
   event_id?: InputMaybe<Scalars['numeric']['input']>;
   event_name?: InputMaybe<Scalars['String']['input']>;
   log_index?: InputMaybe<Scalars['Int']['input']>;
-  params?: InputMaybe<Scalars['json']['input']>;
+  params?: InputMaybe<Scalars['jsonb']['input']>;
   src_address?: InputMaybe<Scalars['String']['input']>;
-  transaction_fields?: InputMaybe<Scalars['json']['input']>;
+  transaction_fields?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
@@ -1061,7 +1130,7 @@ export type Tradetype_Comparison_Exp = {
 export type AllPoolsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllPoolsQuery = { __typename?: 'query_root', Pool: Array<{ __typename?: 'Pool', id: string, name: string, symbol: string, description: string, image: string, twitter: string, telegram: string, website: string, txId: string, asset: string, contract: string, createdAt: number, createdBy: string, db_write_timestamp?: any | null }> };
+export type AllPoolsQuery = { __typename?: 'query_root', Pool: Array<{ __typename?: 'Pool', id: string, chain: any, name: string, symbol: string, description: string, image: string, twitter: string, telegram: string, website: string, txId: string, token: string, contract: string, createdAt: number, createdBy: string, db_write_timestamp?: any | null }> };
 
 export type AllTradesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1069,5 +1138,5 @@ export type AllTradesQueryVariables = Exact<{ [key: string]: never; }>;
 export type AllTradesQuery = { __typename?: 'query_root', Trade: Array<{ __typename?: 'Trade', createdAt: number, db_write_timestamp?: any | null, ethAmount: any, id: string, token: string, tokenAmount: any, tradeType: any, trader: string, txId: string }> };
 
 
-export const AllPoolsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllPools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"Pool"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"image"}},{"kind":"Field","name":{"kind":"Name","value":"twitter"}},{"kind":"Field","name":{"kind":"Name","value":"telegram"}},{"kind":"Field","name":{"kind":"Name","value":"website"}},{"kind":"Field","name":{"kind":"Name","value":"txId"}},{"kind":"Field","name":{"kind":"Name","value":"asset"}},{"kind":"Field","name":{"kind":"Name","value":"contract"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"}},{"kind":"Field","name":{"kind":"Name","value":"db_write_timestamp"}}]}}]}}]} as unknown as DocumentNode<AllPoolsQuery, AllPoolsQueryVariables>;
+export const AllPoolsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllPools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"Pool"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"chain"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"symbol"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"image"}},{"kind":"Field","name":{"kind":"Name","value":"twitter"}},{"kind":"Field","name":{"kind":"Name","value":"telegram"}},{"kind":"Field","name":{"kind":"Name","value":"website"}},{"kind":"Field","name":{"kind":"Name","value":"txId"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"contract"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"}},{"kind":"Field","name":{"kind":"Name","value":"db_write_timestamp"}}]}}]}}]} as unknown as DocumentNode<AllPoolsQuery, AllPoolsQueryVariables>;
 export const AllTradesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllTrades"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"Trade"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"db_write_timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"ethAmount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"token"}},{"kind":"Field","name":{"kind":"Name","value":"tokenAmount"}},{"kind":"Field","name":{"kind":"Name","value":"tradeType"}},{"kind":"Field","name":{"kind":"Name","value":"trader"}},{"kind":"Field","name":{"kind":"Name","value":"txId"}}]}}]}}]} as unknown as DocumentNode<AllTradesQuery, AllTradesQueryVariables>;

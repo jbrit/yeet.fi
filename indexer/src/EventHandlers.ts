@@ -1,6 +1,3 @@
-/*
- * Please refer to https://docs.envio.dev for a thorough guide on all Envio indexer features
- */
 import {
   YeetFinance,
   Pool,
@@ -25,9 +22,8 @@ YeetFinance.CurveInitialized.handler(async ({ event, context }) => {
     website: event.params.website,
     kickoff: event.params.kickoff,
     createdAt: event.block.timestamp,
-    contract: event.params.token,
-    //@ts-ignore
-    txId: event.transaction.id as string,
+    contract: event.srcAddress,
+    txId: event.transaction.hash,
   };
   
   context.Pool.set(entity);
@@ -43,8 +39,7 @@ YeetFinance.TokenBought.handler(async ({ event, context }) => {
     tokenAmount: event.params.amount,
     ethAmount: event.params.ethIn,
     createdAt: event.block.timestamp,
-    //@ts-ignore
-    txId: event.transaction.id as string,
+    txId: event.transaction.hash,
   };
   
   context.Trade.set(entity);
@@ -60,8 +55,7 @@ YeetFinance.TokenSold.handler(async ({ event, context }) => {
     tokenAmount: event.params.amount,
     ethAmount: event.params.ethOut,
     createdAt: event.block.timestamp,
-    //@ts-ignore
-    txId: event.transaction.id as string,
+    txId: event.transaction.hash,
   };
 
   context.Trade.set(entity);

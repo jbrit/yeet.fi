@@ -10,7 +10,7 @@ import { INDEXER_GRAPHQL_URL } from "@/lib/utils";
 import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { baseSepolia } from "wagmi/chains";
+import { auroraTestnet, baseSepolia } from "wagmi/chains";
 import Layout from "@/components/layout";
 
 const client = new ApolloClient({
@@ -21,7 +21,7 @@ const client = new ApolloClient({
 const config = getDefaultConfig({
   appName: "YEET finance",
   projectId: "YEET finance",
-  chains: [baseSepolia],
+  chains: [auroraTestnet, baseSepolia],
   ssr: true,
 });
 
