@@ -16,7 +16,7 @@ import { useAccount } from "wagmi";
 
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { useContracts } from "@/lib/utils";
+import { useContracts, useNearWallet } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 
 export default function Launch() {
@@ -48,7 +48,7 @@ export default function Launch() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [txHash, setTxHash] = useState<string>("");
-  const { isConnected } = useAccount();
+  const {isConnected} = useNearWallet();
   const TX_HASH_CLICKED = "TX_HASH_CLICKED";
 
   const getTxHash = () => new Promise<string>((res, rej) => {

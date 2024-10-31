@@ -5,6 +5,7 @@ import moment from "moment";
 import { useQuery } from "@apollo/client";
 import { ALL_POOLS_QUERY, ALL_TRADES_QUERY } from "@/queries";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getTruncatedAddress } from "@/lib/utils";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,7 +33,6 @@ export default function Home() {
   } = useQuery(ALL_TRADES_QUERY);
   const getTradeCount = (assetId: string) =>
     tradesData?.Trade.filter((trade) => trade.token === assetId).length;
-  const getTruncatedAddress = (address: string) => "user.near"
 
   return (
     <div className="grid grid-cols md:grid-cols-2 xl:grid-cols-3 gap-4 place-items-stretch">

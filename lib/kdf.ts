@@ -41,7 +41,7 @@ export function uncompressedHexPointToEvmAddress(uncompressedHexPoint: string) {
   const addressHash = keccak256(`0x${uncompressedHexPoint.slice(2)}`);
 
   // Ethereum address is last 20 bytes of hash (40 characters), prefixed with 0x
-  return ("0x" + addressHash.substring(addressHash.length - 40));
+  return ("0x" + addressHash.substring(addressHash.length - 40)) as `0x${string}`;
 }
 
 export const deriveAddress = (accountId: string) => {
