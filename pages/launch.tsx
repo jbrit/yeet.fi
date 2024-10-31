@@ -17,6 +17,7 @@ import { useAccount } from "wagmi";
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useContracts } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 export default function Launch() {
   const firebaseConfig = {
@@ -33,9 +34,9 @@ export default function Launch() {
   initializeApp(firebaseConfig);
   const storage = getStorage();
 
-  const [name, setName] = useState<string>();
-  const [symbol, setSymbol] = useState<string>();
-  const [description, setDescription] = useState<string>();
+  const [name, setName] = useState<string>("AnTomato");
+  const [symbol, setSymbol] = useState<string>("ATOM");
+  const [description, setDescription] = useState<string>("who doesn't love tomatoes again?");
   const [image, setImage] = useState<string>();
   const [twitter, setTwitter] = useState<string>();
   const [telegram, setTelegram] = useState<string>();
@@ -45,8 +46,24 @@ export default function Launch() {
   const [assetId, setAssetId] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [txHash, setTxHash] = useState<string>("");
   const { isConnected } = useAccount();
-  const {yeetFinance} = useContracts();
+  const TX_HASH_CLICKED = "TX_HASH_CLICKED";
+
+  const getTxHash = () => new Promise<string>((res, rej) => {
+    localStorage.setItem(TX_HASH_CLICKED,"");
+    setIsConfirmDialogOpen(true);
+    const interval = setInterval(function() {  
+      if (!!localStorage.getItem(TX_HASH_CLICKED)) {
+        clearInterval(interval);
+        res(localStorage.getItem("txHash") ?? "")
+        setIsConfirmDialogOpen(false)
+      };
+    }, 1000)
+  })
+
+  const {yeetFinance} = useContracts(getTxHash);
 
   const resetFields = () => {
     setName("");
@@ -104,16 +121,41 @@ export default function Launch() {
         BigInt(0)
       ]);
       console.log(tx);
-    } catch (error) {}
+    } catch (error) {console.log(error)}
     setLoading(false);
   };
 
-  const onFinishLaunchPress = async () => {};
-
-  const newCurve = "";
 
   return (
     <div className="flex flex-col gap-2 items-stretch max-w-[400px] mx-auto">
+      <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+      <DialogContent className="sm:max-w-md bg-black">
+        <DialogHeader>
+          <DialogTitle>Confirm Transaction</DialogTitle>
+          <DialogDescription>
+            Enter Near Trransaction hash here
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex items-center space-x-2">
+          <div className="grid flex-1 gap-2">
+            <Label htmlFor="tx_hash" className="sr-only">
+              tx hash:
+            </Label>
+            <Input
+              id="tx_hash"
+              placeholder="TxHash"
+              value={txHash}
+              onChange={(e) => {setTxHash(e.target.value); localStorage.setItem("txHash", e.target.value)}}
+            />
+          </div>
+        </div>
+        <DialogFooter className="sm:justify-start">
+          <Button onClick={()=>{localStorage.setItem(TX_HASH_CLICKED,"true")}} type="button" variant="secondary">
+            Confirm
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
         <DialogContent className="">
           <DialogHeader>
@@ -155,7 +197,7 @@ export default function Launch() {
           onChange={(e) => setName(e.target.value)}
           placeholder="ETHEREUM"
           id="token-name"
-          readOnly={!!newCurve}
+          readOnly={!!loading}
         />
       </div>
 
@@ -169,7 +211,7 @@ export default function Launch() {
           onChange={(e) => setSymbol(e.target.value)}
           placeholder="ETH"
           id="token-symbol"
-          readOnly={!!newCurve}
+          readOnly={!!loading}
         />
       </div>
 
@@ -183,7 +225,7 @@ export default function Launch() {
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description"
           id="token-description"
-          readOnly={!!newCurve}
+          readOnly={!!loading}
         ></Textarea>
       </div>
 
@@ -196,7 +238,7 @@ export default function Launch() {
           onChange={handleFileChange}
           placeholder="ETH"
           id="token-image"
-          readOnly={!!newCurve}
+          readOnly={!!loading}
           type="file"
           accept="image/*"
         />
@@ -223,7 +265,7 @@ export default function Launch() {
               onChange={(e) => setTwitter(e.target.value)}
               placeholder="optional"
               id="twitter-socials"
-              readOnly={!!newCurve}
+              readOnly={!!loading}
             />
           </div>
           <div className="flex flex-col justify-center">
@@ -236,7 +278,7 @@ export default function Launch() {
               onChange={(e) => setTelegram(e.target.value)}
               placeholder="optional"
               id="telegram-socials"
-              readOnly={!!newCurve}
+              readOnly={!!loading}
             />
           </div>
           <div className="flex flex-col justify-center">
@@ -249,7 +291,7 @@ export default function Launch() {
               onChange={(e) => setWebsite(e.target.value)}
               placeholder="optional"
               id="website-socials"
-              readOnly={!!newCurve}
+              readOnly={!!loading}
             />
           </div>
         </>
@@ -257,27 +299,11 @@ export default function Launch() {
 
       <Button
         disabled={loading}
-        // loading={loading}
         onClick={onLaunchPress}
         className="mt-4"
       >
         &gt;&gt; yeet &lt;&lt;
       </Button>
-
-      {!!newCurve && (
-        <>
-          <div className="flex flex-col gap-2 items-center">
-            <div>token deployed at</div>
-          </div>
-          <Button
-            disabled={loading}
-            onClick={onFinishLaunchPress}
-            className="mt-6"
-          >
-            &gt;&gt; Finalize Launch &lt;&lt;
-          </Button>
-        </>
-      )}
     </div>
   );
 }
