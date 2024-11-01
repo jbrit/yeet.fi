@@ -12,12 +12,11 @@ import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useAccount } from "wagmi";
 
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useContracts, useNearWallet } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
+import { TxModal } from "@/components/txmodal";
 
 export default function Launch() {
   const firebaseConfig = {
@@ -46,9 +45,8 @@ export default function Launch() {
   const [assetId, setAssetId] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
-  const [txHash, setTxHash] = useState<string>("");
   const {isConnected} = useNearWallet();
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const TX_HASH_CLICKED = "TX_HASH_CLICKED";
 
   const getTxHash = () => new Promise<string>((res, rej) => {
@@ -128,34 +126,7 @@ export default function Launch() {
 
   return (
     <div className="flex flex-col gap-2 items-stretch max-w-[400px] mx-auto">
-      <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
-      <DialogContent className="sm:max-w-md bg-black">
-        <DialogHeader>
-          <DialogTitle>Confirm Transaction</DialogTitle>
-          <DialogDescription>
-            Enter Near Trransaction hash here
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex items-center space-x-2">
-          <div className="grid flex-1 gap-2">
-            <Label htmlFor="tx_hash" className="sr-only">
-              tx hash:
-            </Label>
-            <Input
-              id="tx_hash"
-              placeholder="TxHash"
-              value={txHash}
-              onChange={(e) => {setTxHash(e.target.value); localStorage.setItem("txHash", e.target.value)}}
-            />
-          </div>
-        </div>
-        <DialogFooter className="sm:justify-start">
-          <Button onClick={()=>{localStorage.setItem(TX_HASH_CLICKED,"true")}} type="button" variant="secondary">
-            Confirm
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+      <TxModal {...{isConfirmDialogOpen, setIsConfirmDialogOpen }} />
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
         <DialogContent className="">
           <DialogHeader>

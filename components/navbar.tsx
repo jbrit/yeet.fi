@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useState } from "react";
-import { WalletButton } from "./connect-wallet";
 
 export const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,8 +14,7 @@ export const Navbar = () => {
 
         <div className="flex justify-between items-center gap-6">
           <Link className="hover:text-stone-400" href="/launch">launch</Link>
-          {/* <Link href="/faucet">faucet</Link> */}
-          <WalletButton />
+          <Link href="/faucet">faucet</Link>
         </div>
       </nav>
 
@@ -37,8 +35,7 @@ export const Navbar = () => {
         {isMobileMenuOpen && (
           <>
             <Link className="hover:text-stone-400" href="/launch">launch</Link>
-            {/* <Link href="/faucet">faucet</Link> */}
-            <WalletButton />
+            <Link href="/faucet">faucet</Link>
           </>
         )}
       </nav>

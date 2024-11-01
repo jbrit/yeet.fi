@@ -1,9 +1,8 @@
 import { Toaster } from "react-hot-toast";
 import React, { ReactNode, useContext } from "react";
 import { Navbar } from "./navbar";
-import { deriveAddress } from "@/lib/kdf";
 import { Button } from "@/components/ui/button";
-import { AppContext, useNearWallet } from "@/lib/utils";
+import { AppContext, useContracts, useNearWallet } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Props = {
@@ -11,8 +10,9 @@ type Props = {
 };
 
 const Layout = ({ children }: Props) => {
-  const { wallet, isConnected, signedAccountId } = useNearWallet();
+  const { wallet, isConnected, signedAccountId, derivedAddress } = useNearWallet();
   const { chain, setChain } = useContext(AppContext);
+  const {displayedWETHBalance} = useContracts();
   return (
     <>
       <Toaster />
@@ -41,8 +41,12 @@ const Layout = ({ children }: Props) => {
             </Button>
           ) : (
             <>
-              {deriveAddress(signedAccountId).address} (derived from {signedAccountId})
+            <div>
+
+              {derivedAddress} (derived from {signedAccountId})
               <Button className="ml-4" onClick={async () => {await wallet.signOut()}}>Sign Out</Button>
+            </div>
+            <div>{chain} Balance: {displayedWETHBalance} WETH</div>
             </>
           )}
           </div>

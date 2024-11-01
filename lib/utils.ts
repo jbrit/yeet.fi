@@ -1,12 +1,13 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { bytesToHex, createWalletClient, custom, getContract, hexToBytes, keccak256, recoverAddress, toHex } from "viem";
+import { bytesToHex, createPublicClient, createWalletClient, custom, getContract, hexToBytes, http, keccak256, recoverAddress, toHex } from "viem";
 import { fakeWethAbi, yeetFinanceAbi } from "@/lib/abi";
 import { auroraTestnet, baseSepolia } from "viem/chains";
 import { Ethereum } from "@/lib/ethereum";
 import { createContext, useContext, useState } from "react";
 import { Wallet } from "@/lib/near";
 import { deriveAddress } from "./kdf";
+import { useQuery } from "@tanstack/react-query";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -22,26 +23,31 @@ export const useNearWallet = () => {
   const [signedAccountId, setSignedAccountId] = useState('');
   const wallet = new Wallet({});
   wallet.startUp((signedAccountId) => setSignedAccountId(signedAccountId));
-  return {signedAccountId, isConnected: !!signedAccountId, wallet}
+  return {signedAccountId, isConnected: !!signedAccountId, wallet, derivedAddress: deriveAddress(signedAccountId).address}
 }
 
 export const useContracts = (getTxHash?: () => Promise<string>) => {
-  const {wallet, signedAccountId} = useNearWallet();
+  const {wallet, derivedAddress} = useNearWallet();
   const { chain } = useContext(AppContext);
 
   const base = new Ethereum(baseSepolia.rpcUrls.default.http[0], baseSepolia.id)
   const aurora = new Ethereum(auroraTestnet.rpcUrls.default.http[0], auroraTestnet.id)
+  const ether = chain === "BASE" ? base : aurora;
+
+  const publicClient = createPublicClient({
+    chain: chain === "BASE" ? baseSepolia : auroraTestnet,
+    transport: http()
+  });
 
   const nearWalletClient = createWalletClient({
     chain: chain === "BASE" ? baseSepolia : auroraTestnet,
-    account: deriveAddress(signedAccountId).address,
+    account: derivedAddress,
     transport: custom({
       async request({ method, params }) {
         switch (method) {
           case "eth_chainId":
             return chain === "BASE" ? baseSepolia.id : auroraTestnet.id;
           case "eth_sendTransaction":
-            const ether = chain === "BASE" ? base : aurora;
             const [{data, from, to}] = params;
             const {transaction: unsignedTx, payload} = await ether.createPayload(from, to, 0, data);
             try {
@@ -124,8 +130,23 @@ export const useContracts = (getTxHash?: () => Promise<string>) => {
   const yeetFinance = chain === "BASE" ? baseYeetFinance : auroraYeetFinance;
   const fakeWeth = chain === "BASE" ? baseFakeWeth : auroraFakeWeth;
 
-  return {yeetFinance, fakeWeth}
+  const getWETHalance = async () => parseInt((await publicClient.readContract({
+    address: fakeWeth.address,
+    abi: fakeWeth.abi,
+    functionName: 'balanceOf',
+    args: [derivedAddress]
+  })).toString()) / 1e18
+  const {data: wethBalance, isLoading, isError, isFetched} = useQuery({
+    queryKey: [chain, "BALANCE"],
+    queryFn: getWETHalance,
+    refetchInterval: 500,
+    refetchIntervalInBackground: true
+  })
+  const displayedWETHBalance = isFetched ? wethBalance : isLoading ? "..." : "couldn't fetch";
+
+  return {yeetFinance, fakeWeth, displayedWETHBalance}
 }
+
 
 export const MPC_CONTRACT = 'v1.signer-prod.testnet';
 
