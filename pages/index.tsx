@@ -25,7 +25,7 @@ export default function Home() {
     data: poolsData,
     loading: poolsLoading,
     error: poolsError,
-  } = useQuery(ALL_POOLS_QUERY);
+  } = useQuery(ALL_POOLS_QUERY, {pollInterval: 500});
   const {
     data: tradesData,
     loading: tradesLoading,

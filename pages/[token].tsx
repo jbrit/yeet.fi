@@ -1,35 +1,48 @@
-import { useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 import moment from "moment";
 import { useQuery } from "@apollo/client";
 import { ALL_POOLS_QUERY, ALL_TRADES_QUERY } from "@/queries";
 import { Progress } from "@/components/ui/progress";
-import { getTruncatedAddress } from "@/lib/utils";
+import { AppContext, getTruncatedAddress } from "@/lib/utils";
 import { TradeTable } from "@/components/trade-table";
 import { TradeTab } from "@/components/trade-tab";
 import CandlestickChart from "@/components/candlestick";
 
 export const getServerSideProps = (async ({ query }) => {
-  return { props: { token: query.token as string } };
+  return { props: { token: query.token as `0x${string}` } };
 }) satisfies GetServerSideProps<{ token: string }>;
 
 export default function Token({
   token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const {
-    data: poolsData,
-  } = useQuery(ALL_POOLS_QUERY);
-  const {
-    data: tradesData,
-  } = useQuery(ALL_TRADES_QUERY, { pollInterval: 500 });
+  const { data: poolsData } = useQuery(ALL_POOLS_QUERY);
+  const { data: tradesData } = useQuery(ALL_TRADES_QUERY, {
+    pollInterval: 500,
+  });
 
   const filteredPoolInfos = poolsData?.Pool.filter(
     (pool) => pool.token === token
   );
   const poolInfo = filteredPoolInfos?.length ? filteredPoolInfos[0] : null;
-
-  const totalSupply = 500_000_000;
+  const { chain, setChain } = useContext(AppContext);
+  useEffect(() => {
+    console.log({poolInfo})
+    if (chain !== poolInfo?.chain) {
+      setChain(poolInfo?.chain ?? "AURORA")
+    }
+  }, [poolInfo, chain])
+  const totalSupply  = tradesData?.Trade.filter((trade) => trade.token === token).reduce(
+    (acc, trade) => {
+      return trade.tradeType === "BUY"
+          ? acc +
+            parseInt((BigInt(trade.tokenAmount) / BigInt(1e18)).toString())
+          : acc -
+            parseInt((BigInt(trade.tokenAmount) / BigInt(1e18)).toString());
+    },
+    0
+  );
   const BONDING_CURVE_TOTAL_SUPPLY = 700_000_000;
   const tokensAvailable =
     totalSupply && BONDING_CURVE_TOTAL_SUPPLY - totalSupply;
@@ -38,8 +51,8 @@ export default function Token({
       trade.token !== token
         ? acc
         : trade.tradeType === "BUY"
-        ? acc + (Number(trade.ethAmount))
-        : acc - (Number(trade.ethAmount)),
+        ? acc + Number(trade.ethAmount)
+        : acc - Number(trade.ethAmount),
     Number(0)
   );
   const curvePercent =
@@ -50,13 +63,14 @@ export default function Token({
       (acc, trade) => {
         acc.totalSupply =
           trade.tradeType === "BUY"
-            ? acc.totalSupply + parseInt(trade.tokenAmount)
-            : acc.totalSupply - parseInt(trade.tokenAmount);
+            ? acc.totalSupply +
+              parseInt((BigInt(trade.tokenAmount) / BigInt(1e18)).toString())
+            : acc.totalSupply -
+              parseInt((BigInt(trade.tokenAmount) / BigInt(1e18)).toString());
+        console.log({ trade }, acc.totalSupply);
         const minute =
           60 * minutes * Math.floor(trade.createdAt / (60 * minutes));
-        let price = (3 * acc.totalSupply ** 2) / (343 * 1e24);
-        const inversePrice = (343 * 1e24) / (3 * acc.totalSupply ** 2);
-        price = parseFloat((1 / inversePrice).toFixed(11));
+        const price = (3 * acc.totalSupply ** 2) / (343 * 1e24);
 
         const currentDate = moment.unix(minute).toDate();
         if (acc.ohlc.length === 0) {
@@ -117,9 +131,7 @@ export default function Token({
                     </p>
                     <p className="text-sm text-gray-600">token address:</p>
                     <p className="flex text-sm font-bold text-gray-600 items-center gap-1 border border-gray-400 h-7">
-                      <span className="p-1">
-                        {getTruncatedAddress(token)}
-                      </span>
+                      <span className="p-1">{getTruncatedAddress(token)}</span>
                       <span className="inline-block h-full bg-gray-400 w-[1px]">
                         {" "}
                       </span>
@@ -154,7 +166,7 @@ export default function Token({
             <div className="w-full lg:w-1/3 flex flex-col gap-4">
               <TradeTab
                 symbol={poolInfo.symbol}
-                asset={token}
+                token={token}
                 poolImg={poolInfo.image}
                 isBondingCuveFull={curvePercent === 100}
               />
@@ -171,7 +183,7 @@ export default function Token({
               <p className="text-gray-500">
                 there are {tokensAvailable?.toLocaleString()} tokens still
                 available for sale in the bonding curve and there is{" "}
-                {ethInCurve && ethInCurve / 1e9} ETH in the bonding curve.
+                {ethInCurve && ethInCurve / 1e18} ETH in the bonding curve.
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 {poolInfo.twitter && (
@@ -217,8 +229,8 @@ export default function Token({
                 id: trade.id,
                 trador: trade.trader,
                 type: trade.tradeType,
-                ethAmount: "" + (trade.ethAmount / 1e9).toFixed(9),
-                tokenAmount: parseInt(trade.tokenAmount)
+                ethAmount: "" + (trade.ethAmount / 1e18).toFixed(18),
+                tokenAmount: (parseInt(trade.tokenAmount) / 1e18)
                   .toString()
                   .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
                 createdAt: trade.createdAt,

@@ -14,26 +14,22 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useContracts } from "@/lib/utils";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { TxModal } from "@/components/txmodal";
 
 type Props = {
   symbol: string;
-  asset: string;
+  token: `0x${string}`;
   poolImg: string;
   isBondingCuveFull: boolean;
 };
 
-export function TradeTab({
-  symbol,
-  asset,
-  poolImg,
-  isBondingCuveFull,
-}: Props) {
+export function TradeTab({ symbol, token, poolImg, isBondingCuveFull }: Props) {
   const [currency, setCurrency] = useState(symbol);
   const [showSlippage, setShowSlippage] = useState(false);
   const [slippage, setSlippage] = useState(0);
@@ -41,9 +37,32 @@ export function TradeTab({
   const [sellAmount, setSellAmount] = useState(0);
   const [ethIn, setEthIn] = useState(0);
   const [ethOut, setEthOut] = useState(0);
+  const MAX_U256 = BigInt(
+    "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+  );
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const TX_HASH_CLICKED = "TX_HASH_CLICKED";
 
+  const getTxHash = () =>
+    new Promise<string>((res, rej) => {
+      localStorage.setItem(TX_HASH_CLICKED, "");
+      setIsConfirmDialogOpen(true);
+      const interval = setInterval(function () {
+        if (!!localStorage.getItem(TX_HASH_CLICKED)) {
+          clearInterval(interval);
+          res(localStorage.getItem("txHash") ?? "");
+          setIsConfirmDialogOpen(false);
+        }
+      }, 1000);
+    });
+  const { yeetFinance, wethAllowance, bondingCurve, fakeWeth } = useContracts(
+    getTxHash,
+    token
+  );
+  console.log({ wethAllowance, bondingCurve });
   return (
     <>
+      <TxModal {...{ isConfirmDialogOpen, setIsConfirmDialogOpen }} />
       <Dialog open={showSlippage} onOpenChange={setShowSlippage}>
         <DialogContent className="sm:max-w-[425px] bg-white">
           <DialogHeader>
@@ -77,6 +96,15 @@ export function TradeTab({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {!!bondingCurve && wethAllowance != MAX_U256 && <Button
+        onClick={async () => {
+          await fakeWeth.write.approve([bondingCurve!, MAX_U256])
+          toast.success(`Bonding Curve Allowed to trade WETH!`);
+        }}
+        className="bg-green-600 w-full"
+      >
+        Bonding Curve Allow WETH
+      </Button>}
       <Tabs defaultValue="buy" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="buy">Buy</TabsTrigger>
@@ -152,8 +180,9 @@ export function TradeTab({
             <CardFooter>
               <Button
                 onClick={async () => {
+                  await yeetFinance.write.buyToken([token, BigInt(buyAmount) * BigInt(1e18), BigInt(1e18)])
                   toast.success(
-                    `Bought ${buyAmount} ${symbol} for ${0 / 1e9} ETH`
+                    `Bought ${buyAmount} ${symbol} for ETH`
                   );
                 }}
                 className="bg-green-600 w-full"
@@ -212,7 +241,8 @@ export function TradeTab({
             <CardFooter>
               <Button
                 onClick={async () => {
-                  toast.success(`Sold ${symbol} for ${0} ETH`);
+                  await yeetFinance.write.sellToken([token, BigInt(sellAmount) * BigInt(1e18), BigInt(0)])
+                  toast.success(`Sold ${sellAmount} ${symbol} for ETH`);
                 }}
                 className="bg-red-500 w-full"
               >

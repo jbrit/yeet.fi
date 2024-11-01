@@ -26,7 +26,7 @@ export const useNearWallet = () => {
   return {signedAccountId, isConnected: !!signedAccountId, wallet, derivedAddress: deriveAddress(signedAccountId).address}
 }
 
-export const useContracts = (getTxHash?: () => Promise<string>) => {
+export const useContracts = (getTxHash?: () => Promise<string>, memeCoinAddress?:  `0x${string}`) => {
   const {wallet, derivedAddress} = useNearWallet();
   const { chain } = useContext(AppContext);
 
@@ -143,8 +143,39 @@ export const useContracts = (getTxHash?: () => Promise<string>) => {
     refetchIntervalInBackground: true
   })
   const displayedWETHBalance = isFetched ? wethBalance : isLoading ? "..." : "couldn't fetch";
+  
+  
+  const getBondingCurve = async () => await publicClient.readContract({
+    address: yeetFinance.address,
+    abi: yeetFinance.abi,
+    functionName: 'bondingCurves',
+    args: [memeCoinAddress!]
+  })
+  const {data: bondingCurve, isLoading: bondingCurveLoading, isError: bondingCurveError, isFetched: bondingCurveFetched} = useQuery({
+    queryKey: [chain, "BONDING_CURVE", memeCoinAddress],
+    queryFn: getBondingCurve,
+    refetchInterval: 1000,
+    enabled: !!memeCoinAddress
+  })
 
-  return {yeetFinance, fakeWeth, displayedWETHBalance}
+  const getWETHAllowance = async () => await publicClient.readContract({
+    address: fakeWeth.address,
+    abi: fakeWeth.abi,
+    functionName: 'allowance',
+    args: [derivedAddress, bondingCurve!]
+  })
+  const {data: wethAllowance, isLoading: wethAllowanceLoading, isError: wethAllowanceError, isFetched: wethAllowanceFetched} = useQuery({
+    queryKey: [chain, "WETH_ALLOWANCE", memeCoinAddress],
+    queryFn: getWETHAllowance,
+    refetchInterval: 1000,
+    enabled: !!bondingCurve
+  })
+  
+  return {yeetFinance, fakeWeth, displayedWETHBalance, wethAllowance, bondingCurve}
+}
+
+const useAllowances = () => {
+
 }
 
 

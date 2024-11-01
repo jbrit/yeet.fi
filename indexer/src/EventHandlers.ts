@@ -49,7 +49,7 @@ YeetFinance.TokenSold.handler(async ({ event, context }) => {
   const entity: Trade = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
     chain: getChain(event.chainId),
-    tradeType: "BUY",
+    tradeType: "SELL",
     trader: event.params.trader,
     token: event.params.token,
     tokenAmount: event.params.amount,
