@@ -33,9 +33,9 @@ export default function Launch() {
   initializeApp(firebaseConfig);
   const storage = getStorage();
 
-  const [name, setName] = useState<string>("AnTomato");
-  const [symbol, setSymbol] = useState<string>("ATOM");
-  const [description, setDescription] = useState<string>("who doesn't love tomatoes again?");
+  const [name, setName] = useState<string>("");
+  const [symbol, setSymbol] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [image, setImage] = useState<string>();
   const [twitter, setTwitter] = useState<string>();
   const [telegram, setTelegram] = useState<string>();
@@ -226,6 +226,18 @@ export default function Launch() {
 
       {moreOptions ? (
         <>
+          <div className="flex flex-col justify-center">
+            <label htmlFor="kickoff" className="text-gray-400">
+              kickoff:
+            </label>
+            <Input
+              className="w-full"
+              placeholder="optional"
+              id="kickoff"
+              type="datetime-local"
+              readOnly={!!loading}
+            />
+          </div>
           <div className="flex flex-col justify-center">
             <label htmlFor="twitter-socials" className="text-gray-400">
               Twitter:
