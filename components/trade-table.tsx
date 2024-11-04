@@ -14,10 +14,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { getTruncatedAddress } from "@/lib/utils";
+import { AppContext, getTruncatedAddress } from "@/lib/utils";
 import moment from "moment";
 import Link from "next/link";
-// import { Link } from "./Link";
+import { useContext } from "react";
 
 type Props = {
   tokenName: string;
@@ -49,6 +49,7 @@ function formatNumber(number: number): string {
 }
 
 export function TradeTable({ trades, tokenName }: Props) {
+  const { chain } = useContext(AppContext);
   const traderTxn = (trader: string) => {
     const selectedTrade = trades.filter((trade) => trade.trador === trader);
     const bought = selectedTrade.filter((trade) => trade.type === "BUY");
@@ -145,9 +146,6 @@ export function TradeTable({ trades, tokenName }: Props) {
                               {amountSoldInToken}
                             </span>
                             <span className="text-gray-400">{pnlInToken}</span>
-                            {/* <span className="text-gray-400">
-                              135.1K of 135.1K
-                            </span> */}
                           </div>
                           <div className="flex flex-col text-right">
                             <span className="text-gray-400">
@@ -158,10 +156,6 @@ export function TradeTable({ trades, tokenName }: Props) {
                             </span>
                           </div>
                         </div>
-
-                        {/* <div className="w-full bg-gray-700 rounded-full h-1.5 mb-4">
-                          <div className="bg-white h-1.5 rounded-full w-full"></div>
-                        </div> */}
                       </div>
                     </TooltipContent>
                   </Tooltip>
@@ -198,7 +192,7 @@ export function TradeTable({ trades, tokenName }: Props) {
               <TableCell className="text-right">
                 <>
                   <Link
-                    href={`https://explorer.testnet.aurora.dev/tx/${trade.txId}`}
+                    href={chain === "AURORA" ? `https://explorer.testnet.aurora.dev/tx/${trade.txId}` : `https://sepolia.basescan.org/tx/${trade.txId}`}
                     target="_blank"
                   >
                     {trade.txId}
