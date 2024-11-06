@@ -64,12 +64,12 @@ export function TradeTab({ symbol, token, poolImg, isBondingCuveFull }: Props) {
     <>
       <TxModal {...{ isConfirmDialogOpen, setIsConfirmDialogOpen }} />
       <Dialog open={showSlippage} onOpenChange={setShowSlippage}>
-        <DialogContent className="sm:max-w-[425px] bg-white">
+        <DialogContent className="sm:max-w-[425px] bg-black">
           <DialogHeader>
-            <DialogTitle className="text-gray-700">
+            <DialogTitle className="text-foreground">
               Set max. slippage (%)
             </DialogTitle>
-            <DialogDescription className="text-gray-600">
+            <DialogDescription className="text-foreground">
               This is the maximum amount of slippage you are willing to accept
               when placing trades
             </DialogDescription>
@@ -96,17 +96,19 @@ export function TradeTab({ symbol, token, poolImg, isBondingCuveFull }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {!!bondingCurve && wethAllowance != MAX_U256 && <Button
-        onClick={async () => {
-          await fakeWeth.write.approve([bondingCurve!, MAX_U256])
-          toast.success(`Bonding Curve Allowed to trade WETH!`);
-        }}
-        className="bg-green-600 w-full"
-      >
-        Bonding Curve Allow WETH
-      </Button>}
+      {!!bondingCurve && wethAllowance != MAX_U256 && (
+        <Button
+          onClick={async () => {
+            await fakeWeth.write.approve([bondingCurve!, MAX_U256]);
+            toast.success(`Bonding Curve Allowed to trade WETH!`);
+          }}
+          className="bg-green-600 w-full"
+        >
+          Bonding Curve Allow WETH
+        </Button>
+      )}
       <Tabs defaultValue="buy" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 bg-black border border-gray-200 text-foreground">
           <TabsTrigger value="buy">Buy</TabsTrigger>
           <TabsTrigger value="sell">Sell</TabsTrigger>
         </TabsList>
@@ -180,10 +182,12 @@ export function TradeTab({ symbol, token, poolImg, isBondingCuveFull }: Props) {
             <CardFooter>
               <Button
                 onClick={async () => {
-                  await yeetFinance.write.buyToken([token, BigInt(buyAmount) * BigInt(1e18), BigInt(1e18)])
-                  toast.success(
-                    `Bought ${buyAmount} ${symbol} for ETH`
-                  );
+                  await yeetFinance.write.buyToken([
+                    token,
+                    BigInt(buyAmount) * BigInt(1e18),
+                    BigInt(1e18),
+                  ]);
+                  toast.success(`Bought ${buyAmount} ${symbol} for ETH`);
                 }}
                 className="bg-green-600 w-full"
               >
@@ -241,7 +245,11 @@ export function TradeTab({ symbol, token, poolImg, isBondingCuveFull }: Props) {
             <CardFooter>
               <Button
                 onClick={async () => {
-                  await yeetFinance.write.sellToken([token, BigInt(sellAmount) * BigInt(1e18), BigInt(0)])
+                  await yeetFinance.write.sellToken([
+                    token,
+                    BigInt(sellAmount) * BigInt(1e18),
+                    BigInt(0),
+                  ]);
                   toast.success(`Sold ${sellAmount} ${symbol} for ETH`);
                 }}
                 className="bg-red-500 w-full"

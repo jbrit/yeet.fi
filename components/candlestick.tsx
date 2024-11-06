@@ -31,7 +31,7 @@ const CandlestickChart: React.FC<Props> = ({ getOhlc }) => {
     chart: {
       type: "candlestick",
       height: 350,
-      background: "#ffffff",
+      background: "#171717",
       toolbar: {
         show: true,
         tools: {},
@@ -50,7 +50,7 @@ const CandlestickChart: React.FC<Props> = ({ getOhlc }) => {
         show: true,
         style: {
           fontSize: "13px",
-          colors: "#000000",
+          colors: "#ffffff",
         },
         formatter: (val) => {
           return moment(val).format("DD MMM HH:mm");
@@ -124,13 +124,12 @@ const CandlestickChart: React.FC<Props> = ({ getOhlc }) => {
           setInterval(parseInt(value));
         }}
       >
-        <SelectTrigger className="w-[120px] h-[30px] bg-[#e1e1e1] relative z-[10000] translate-y-[30px]">
+        <SelectTrigger className="w-[120px] h-[30px] bg-background relative z-[10000] translate-y-[30px]">
           <SelectValue placeholder="Interval" />
         </SelectTrigger>
         <SelectContent
-          onChange={(e) => {
-          }}
-          className="bg-[#e1e1e1] text-stone-600"
+          onChange={(e) => {}}
+          className="bg-black text-foreground"
         >
           <SelectItem className="" value="1">
             1 minute

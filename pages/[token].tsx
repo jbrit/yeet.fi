@@ -28,21 +28,18 @@ export default function Token({
   const poolInfo = filteredPoolInfos?.length ? filteredPoolInfos[0] : null;
   const { chain, setChain } = useContext(AppContext);
   useEffect(() => {
-    console.log({poolInfo})
+    console.log({ poolInfo });
     if (chain !== poolInfo?.chain) {
-      setChain(poolInfo?.chain ?? "AURORA")
+      setChain(poolInfo?.chain ?? "AURORA");
     }
-  }, [poolInfo, chain])
-  const totalSupply  = tradesData?.Trade.filter((trade) => trade.token === token).reduce(
-    (acc, trade) => {
-      return trade.tradeType === "BUY"
-          ? acc +
-            parseInt((BigInt(trade.tokenAmount) / BigInt(1e18)).toString())
-          : acc -
-            parseInt((BigInt(trade.tokenAmount) / BigInt(1e18)).toString());
-    },
-    0
-  );
+  }, [poolInfo, chain]);
+  const totalSupply = tradesData?.Trade.filter(
+    (trade) => trade.token === token
+  ).reduce((acc, trade) => {
+    return trade.tradeType === "BUY"
+      ? acc + parseInt((BigInt(trade.tokenAmount) / BigInt(1e18)).toString())
+      : acc - parseInt((BigInt(trade.tokenAmount) / BigInt(1e18)).toString());
+  }, 0);
   const BONDING_CURVE_TOTAL_SUPPLY = 700_000_000;
   const tokensAvailable =
     totalSupply && BONDING_CURVE_TOTAL_SUPPLY - totalSupply;
@@ -123,14 +120,14 @@ export default function Token({
               <div className="flex flex-col gap-3">
                 <div className="flex justify-between gap-3 flex-wrap items-center">
                   <div className="flex flex-wrap gap-3 items-center">
-                    <p className="text-sm text-gray-600 lowercase">
+                    <p className="text-sm text-gray-300 lowercase">
                       {poolInfo.name}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-300">
                       Ticker: {poolInfo.symbol}
                     </p>
-                    <p className="text-sm text-gray-600">token address:</p>
-                    <p className="flex text-sm font-bold text-gray-600 items-center gap-1 border border-gray-400 h-7">
+                    <p className="text-sm text-gray-300">token address:</p>
+                    <p className="flex text-sm font-bold text-gray-300 items-center gap-1 border border-gray-400 h-7">
                       <span className="p-1">{getTruncatedAddress(token)}</span>
                       <span className="inline-block h-full bg-gray-400 w-[1px]">
                         {" "}
@@ -152,9 +149,9 @@ export default function Token({
                       </button>
                     </p>
                   </div>
-                  <p className="text-green-700">
+                  <p className="text-green-500">
                     created by{" "}
-                    <span className="p-1 bg-green-600 bg-opacity-20 text-gray-600">
+                    <span className="p-1 bg-green-400 text-gray-700">
                       {getTruncatedAddress(poolInfo.createdBy)}
                     </span>{" "}
                     about {moment(poolInfo.createdAt * 1000).fromNow()}
@@ -171,16 +168,16 @@ export default function Token({
                 isBondingCuveFull={curvePercent === 100}
               />
               <div className="flex flex-col gap-2">
-                <p className="text-gray-500">
+                <p className="text-gray-200">
                   bonding curve progress: {curvePercent}%
                 </p>
                 <Progress value={curvePercent} />
               </div>
-              <p className="text-gray-500">
+              <p className="text-gray-200">
                 when the bonding curve liquidity reaches 1 ETH, 300M $
                 {poolInfo.symbol} will be deposited into the DEX
               </p>
-              <p className="text-gray-500">
+              <p className="text-gray-200">
                 there are {tokensAvailable?.toLocaleString()} tokens still
                 available for sale in the bonding curve and there is{" "}
                 {ethInCurve && ethInCurve / 1e18} ETH in the bonding curve.

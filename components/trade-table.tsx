@@ -192,7 +192,11 @@ export function TradeTable({ trades, tokenName }: Props) {
               <TableCell className="text-right">
                 <>
                   <Link
-                    href={chain === "AURORA" ? `https://explorer.testnet.aurora.dev/tx/${trade.txId}` : `https://sepolia.basescan.org/tx/${trade.txId}`}
+                    href={
+                      chain === "AURORA"
+                        ? `https://explorer.testnet.aurora.dev/tx/${trade.txId}`
+                        : `https://sepolia.basescan.org/tx/${trade.txId}`
+                    }
                     target="_blank"
                   >
                     {trade.txId}
